@@ -1,0 +1,5 @@
+SCC = This is a Source Code Control file
+
+[AutoTasks.vbp]
+SCC_Aux_Path = "\\VCAT004CTO\STSIGR\Sistema\RM\STEFAN\vss"
+SCC_Project_Name = "$/Melhorias/AutoTasks/AutoTasks", BCEBAAAA
