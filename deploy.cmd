@@ -1,1 +1,0 @@
-python -m nuitka --windows-disable-console --mingw64 AutoTasks.pyw
