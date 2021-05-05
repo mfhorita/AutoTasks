@@ -13,7 +13,6 @@ try:
     import datetime as dt
     import keyboard as kb
     import sysconfig
-    import shutil
     import time
 
 except Exception as ex:
@@ -21,6 +20,7 @@ except Exception as ex:
     os.system('pause')
 
 global win
+global path
 global dt_arq
 global list_dias
 global txt_executar
@@ -44,7 +44,8 @@ class ClockWindow(wx.Frame):
 
         def ExecPrograma(dt_exec):
             if dt_exec[:, 'DesabilitarTarefa'][0, 0] == 0:
-                kb.send('windows+m')
+                if dt_exec[:, 'MinimizarTelas'][0, 0] == 1:
+                    kb.send('windows+m')
                 os.system(dt_exec[:, 'Programa'][0, 0])
 
         lst_horarios = [dt_arq[:, 'Horario'][i, 0] for i in range(dt_arq.nrows)]
@@ -71,13 +72,15 @@ class CustomTaskBarIcon(wx.adv.TaskBarIcon):
         wx.adv.TaskBarIcon.__init__(self)
         self.frame = frame
 
-        path = os.path.dirname(os.path.realpath(__file__))
-        img = wx.Image(path + '\\' + 'autotasks.ico', wx.BITMAP_TYPE_ANY)
-        bmp = wx.Bitmap(img)
-        self.icon = wx.Icon()
-        self.icon.CopyFromBitmap(bmp)
-
-        self.SetIcon(self.icon, "Restore")
+        if os.path.isfile(path + '\\' + 'autotasks.ico'):
+            img = wx.Image(path + '\\' + 'autotasks.ico', wx.BITMAP_TYPE_ANY)
+            bmp = wx.Bitmap(img)
+            self.icon = wx.Icon()
+            self.icon.CopyFromBitmap(bmp)
+            self.SetIcon(self.icon, "Restore")
+        else:
+            self.icon = wx.Icon()
+            self.SetIcon(self.icon, "Restore")
         self.Bind(wx.adv.EVT_TASKBAR_LEFT_DOWN, self.OnTaskBarLeftClick)
 
     def OnTaskBarActivate(self, event):
@@ -125,6 +128,7 @@ class MainFrame(wx.Frame):
             self.tbIcon.RemoveIcon()
             self.tbIcon.Destroy()
             self.Destroy()
+            quit()
 
         return event
 
@@ -194,7 +198,6 @@ def salvar_tarefa(event):
         dt_arq_novo = dtb.Frame(novo_conteudo)
         dt_arq.rbind(dt_arq_novo)
 
-    path = os.path.dirname(os.path.realpath(__file__))
     dt_arq.sort("Nro").to_pandas().to_csv(path + '\\' + 'autotasks.cfg', sep=';', index=False)
     atualizar_tela(s_tarefa)
 
@@ -210,7 +213,6 @@ def selecionar_tarefa(event):
 
 
 def carregar_arquivo():
-    path = os.path.dirname(os.path.realpath(__file__))
     file = path + '\\' + 'autotasks.cfg'
 
     if os.path.isfile(file):
@@ -247,7 +249,8 @@ def atualizar_tela(s_tarefa=''):
 
 
 def executar_tarefa(event):
-    kb.send('windows+m')
+    if int(chk_min_telas.GetValue()) == 1:
+        kb.send('windows+m')
     os.system(txt_executar.GetValue())
     return event
 
@@ -265,23 +268,33 @@ def CreateShortcut(s_path_orig, s_path_atalho):
 
 
 def exec_instalacao(event):
-    path = os.path.dirname(os.path.realpath(__file__))
-    if path.lower() == r'c:\autotasks':
-        wx.MessageBox(r'O AutoTasks já foi instalado em C:\AutoTasks!', 'AutoTasks', wx.OK | wx.ICON_EXCLAMATION)
+    s_path_dest = r'C:\AutoTasks\AutoTasks.exe'
+    if os.path.isfile(s_path_dest):
+        wx.MessageBox(r'Instalação já existente em C:\AutoTasks\ !', 'AutoTasks', wx.OK | wx.ICON_EXCLAMATION)
     else:
         if wx.MessageBox('Confirma instalação do AutoTasks?', 'AutoTasks', wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
             os.system(r'mkdir c:\AutoTasks')
-            s_path_dest = r'C:\AutoTasks\AutoTasks.exe'
-            if not os.path.isfile(s_path_dest):
-                s_path_orig = path + '\\AutoTasks.exe'
-                s_path_atalho = path + "\\AutoTasks.lnk"
-                CreateShortcut(s_path_orig, s_path_atalho)
-                shutil.move(s_path_atalho, r'C:\AutoTasks')
+
+            os.system('copy ' + path + r'\AutoTasks.exe C:\AutoTasks')
+            os.system('copy ' + path + r'\AutoTasks.ico C:\AutoTasks')
+            os.system('copy ' + path + r'\AutoTasks.png C:\AutoTasks')
+
+            s_path_atalho = r'C:\AutoTasks\AutoTasks.lnk'
+            CreateShortcut(s_path_dest, s_path_atalho)
+            os.system('copy /Y ' + s_path_atalho + ' ' + r'%AppData%\Microsoft\Windows\"Start Menu"\Programs\Startup')
+
+            os.system(r'explorer.exe C:\AutoTasks')
+            win.tbIcon.RemoveIcon()
+            win.tbIcon.Destroy()
+            win.Destroy()
+            quit()
+
     return event
 
 
 def main():
     global win
+    global path
     global dt_arq
     global list_dias
     global txt_executar
@@ -292,13 +305,18 @@ def main():
     global chk_min_telas
 
     try:
+        if os.path.isfile(os.getcwd() + '\\Python.exe'):
+            path = os.path.dirname(os.path.realpath(__file__))
+        else:
+            path = os.getcwd()
+
         app = wx.App(False)
         win = MainFrame()
 
         # Carrega o ícone
         # ------------------------------------------------------------------------------------------------------------
-        path = os.path.dirname(os.path.realpath(__file__))
-        win.SetIcon(wx.Icon(path + "\\" + "AutoTasks.ico"))
+        if os.path.isfile(path + '\\' + 'autotasks.ico'):
+            win.SetIcon(wx.Icon(path + "\\" + "AutoTasks.ico"))
         panel = wx.Panel(win)
 
         # Carrega configurações
@@ -343,8 +361,7 @@ def main():
         # ------------------------------------------------------------------------------------------------------------
         wx.StaticText(panel, label="Dias:", pos=(220, 95))
         list_dias = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira",
-                     "Sábado", "Domingo", "Todos", "Segunda à Se"
-                                                   "xta"]
+                     "Sábado", "Domingo", "Todos", "Segunda à Sexta"]
         cbo_dias = wx.ComboBox(panel, -1, value="Todos", pos=(250, 90),
                                size=wx.DefaultSize, choices=list_dias, style=wx.CB_READONLY)
 
@@ -375,8 +392,9 @@ def main():
 
         # Definir imagem
         # ------------------------------------------------------------------------------------------------------------
-        img_icone = wx.Bitmap(wx.Image(path + "\\" + "AutoTasks.png", wx.BITMAP_TYPE_PNG).Scale(90, 80))
-        wx.StaticBitmap(panel, -1, img_icone, pos=(70, 90))
+        if os.path.isfile(path + '\\' + 'autotasks.png'):
+            img_icone = wx.Bitmap(wx.Image(path + "\\" + "AutoTasks.png", wx.BITMAP_TYPE_PNG).Scale(90, 80))
+            wx.StaticBitmap(panel, -1, img_icone, pos=(70, 90))
 
         # Define o botão para fechar a tela
         # ------------------------------------------------------------------------------------------------------------
@@ -392,7 +410,7 @@ def main():
         menu_file = wx.Menu()
         menu_file.Append(1, "&Executar")
         win.Bind(wx.EVT_MENU, executar_tarefa, id=1)
-        menu_file.Append(2, "&Aplicar")
+        menu_file.Append(2, "&Salvar")
         win.Bind(wx.EVT_MENU, salvar_tarefa, id=2)
         menu_file.Append(3, "&Minimizar")
         win.Bind(wx.EVT_MENU, minimizar_tela, id=3)
@@ -416,7 +434,7 @@ def main():
         menu_bar = wx.MenuBar()
         menu_bar.Append(menu_file, "A&rquivo")
         menu_bar.Append(menu_editar, "E&ditar")
-        menu_bar.Append(menu_ajuda, "A&juda")
+        menu_bar.Append(menu_ajuda, "&Ajuda")
 
         win.SetMenuBar(menu_bar)
 
