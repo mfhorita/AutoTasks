@@ -77,10 +77,9 @@ class CustomTaskBarIcon(wx.adv.TaskBarIcon):
             bmp = wx.Bitmap(img)
             self.icon = wx.Icon()
             self.icon.CopyFromBitmap(bmp)
-            self.SetIcon(self.icon, "Restore")
         else:
             self.icon = wx.Icon()
-            self.SetIcon(self.icon, "Restore")
+        self.SetIcon(self.icon, "AutoTasks")
         self.Bind(wx.adv.EVT_TASKBAR_LEFT_DOWN, self.OnTaskBarLeftClick)
 
     def OnTaskBarActivate(self, event):
@@ -260,10 +259,11 @@ def exibir_sobre(event):
     return event
 
 
-def CreateShortcut(s_path_orig, s_path_atalho):
+def CreateShortcut(s_path, s_path_orig, s_path_atalho):
     shell = win32com.client.Dispatch("WScript.Shell")
     shortcut = shell.CreateShortCut(s_path_atalho)
     shortcut.Targetpath = s_path_orig
+    shortcut.WorkingDirectory = s_path
     shortcut.save()
 
 
@@ -280,7 +280,7 @@ def exec_instalacao(event):
             os.system('copy ' + path + r'\AutoTasks.png C:\AutoTasks')
 
             s_path_atalho = r'C:\AutoTasks\AutoTasks.lnk'
-            CreateShortcut(s_path_dest, s_path_atalho)
+            CreateShortcut('C:\AutoTasks', s_path_dest, s_path_atalho)
             os.system('copy /Y ' + s_path_atalho + ' ' + r'%AppData%\Microsoft\Windows\"Start Menu"\Programs\Startup')
 
             os.system(r'explorer.exe C:\AutoTasks')
