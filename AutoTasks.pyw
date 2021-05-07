@@ -280,7 +280,7 @@ def exec_instalacao(event):
             os.system('copy ' + path + r'\AutoTasks.png C:\AutoTasks')
 
             s_path_atalho = r'C:\AutoTasks\AutoTasks.lnk'
-            CreateShortcut('C:\AutoTasks', s_path_dest, s_path_atalho)
+            CreateShortcut(r'C:\AutoTasks', s_path_dest, s_path_atalho)
             os.system('copy /Y ' + s_path_atalho + ' ' + r'%AppData%\Microsoft\Windows\"Start Menu"\Programs\Startup')
 
             os.system(r'explorer.exe C:\AutoTasks')
