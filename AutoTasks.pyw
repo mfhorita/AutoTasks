@@ -12,8 +12,8 @@ try:
     import win32com.client
     import datetime as dt
     import keyboard as kb
-    import sysconfig
     import time
+    import sys
 
 except Exception as ex:
     print('ERRO: ', ex)
@@ -441,7 +441,7 @@ def main():
         # Status Bar
         # ------------------------------------------------------------------------------------------------------------
         win.CreateStatusBar()
-        win.SetStatusText('Python ' + sysconfig.get_python_version())
+        win.SetStatusText('Python ' + sys.version)
 
         win.Show(False)
         app.MainLoop()
