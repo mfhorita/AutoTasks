@@ -9,6 +9,7 @@ try:
     from datatable import f
     import datatable as dtb
 
+    from threading import Thread
     import win32com.client
     import datetime as dt
     import keyboard as kb
@@ -21,6 +22,7 @@ except Exception as ex:
 
 global win
 global path
+global thread
 global dt_arq
 global list_dias
 global txt_executar
@@ -247,10 +249,15 @@ def atualizar_tela(s_tarefa=''):
     chk_min_telas.SetValue(dt_arq[0, 5])  # Minimizar Telas
 
 
-def executar_tarefa(event):
+def paralelizar_execucoes():
     if int(chk_min_telas.GetValue()) == 1:
         kb.send('windows+m')
     os.system(txt_executar.GetValue())
+
+
+def executar_tarefa(event):
+    thread[cbo_tarefas.GetValue()] = Thread(target=paralelizar_execucoes)
+    thread[cbo_tarefas.GetValue()].start()
     return event
 
 
@@ -296,6 +303,7 @@ def main():
     global win
     global path
     global dt_arq
+    global thread
     global list_dias
     global txt_executar
     global cbo_tarefas
@@ -309,6 +317,8 @@ def main():
             path = os.path.dirname(os.path.realpath(__file__))
         else:
             path = os.getcwd()
+
+        thread = dict()
 
         app = wx.App(False)
         win = MainFrame()
