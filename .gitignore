@@ -1,7 +1,11 @@
 AutoTasks.build
+build
+venv
 
 *.cmd
 *.dll
 *.lnk
-
+*.zip
+*.exe
+*.bat
 
