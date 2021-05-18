@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AutoTasks"
-#define MyAppVersion "3.0.2"
+#define MyAppVersion "3.0.3"
 #define MyAppPublisher "Marcelo Horita"
 #define MyAppURL "https://github.com/mfhorita"
 #define MyAppExeName "AutoTasks.exe"
@@ -13,7 +13,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{52FE1BAA-ECFA-497C-AA62-AAE99E1C2F0D}
+AppId={{400C31C4-7DD5-46BF-A55F-88C01B0A2BB0}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -41,16 +41,8 @@ Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortugue
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Projects\AutoTasks\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\AutoTasks\build\exe.win-amd64-3.8\lib\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\Projects\AutoTasks\AutoTasks.build\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "D:\Projects\AutoTasks\AutoTasks.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\AutoTasks\AutoTasks.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\AutoTasks\AutoTasks.pdf"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\AutoTasks\Autotasks.png"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\AutoTasks\build\exe.win-amd64-3.8\AutoTasks_.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\AutoTasks\build\exe.win-amd64-3.8\python3.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Projects\AutoTasks\build\exe.win-amd64-3.8\python38.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Projects\AutoTasks\build\exe.win-amd64-3.8\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Projects\AutoTasks\build\exe.win-amd64-3.8\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]

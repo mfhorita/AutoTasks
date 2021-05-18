@@ -262,7 +262,7 @@ def executar_tarefa(event):
 
 
 def exibir_sobre(event):
-    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.0.2', wx.OK | wx.ICON_INFORMATION)
+    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.0.3', wx.OK | wx.ICON_INFORMATION)
     return event
 
 
@@ -274,10 +274,21 @@ def CreateShortcut(s_path, s_path_orig, s_path_atalho):
     shortcut.save()
 
 
+def exec_inicwindows(event):
+    s_path_dest = r'C:\AutoTasks\AutoTasks.exe'
+    if not os.path.isfile(s_path_dest):
+        exec_instalacao(event)
+    else:
+        s_path_atalho = r'C:\AutoTasks\AutoTasks.lnk'
+        CreateShortcut(r'C:\AutoTasks', s_path_dest, s_path_atalho)
+        os.system('copy /Y ' + s_path_atalho + ' ' + r'%AppData%\Microsoft\Windows\"Start Menu"\Programs\Startup')
+        wx.MessageBox(r'Configuração realizada com sucesso!', 'AutoTasks', wx.OK | wx.ICON_INFORMATION)
+
+
 def exec_instalacao(event):
     s_path_dest = r'C:\AutoTasks\AutoTasks.exe'
     if os.path.isfile(s_path_dest):
-        wx.MessageBox(r'Instalação já existente em C:\AutoTasks\ !', 'AutoTasks', wx.OK | wx.ICON_EXCLAMATION)
+        wx.MessageBox(r'Instalação já existente em C:\AutoTasks\ !', 'AutoTasks', wx.OK | wx.ICON_INFORMATION)
     else:
         if wx.MessageBox('Confirma instalação do AutoTasks?', 'AutoTasks', wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
             os.system(r'mkdir c:\AutoTasks')
@@ -435,11 +446,13 @@ def main():
         win.Bind(wx.EVT_MENU, excluir_tarefa, id=6)
 
         menu_ajuda = wx.Menu()
-        menu_ajuda.Append(7, "&Instalar AutoTasks")
+        menu_ajuda.Append(7, "&Instalação do AutoTasks")
         win.Bind(wx.EVT_MENU, exec_instalacao, id=7)
+        menu_ajuda.Append(8, "I&nicialização com Windows")
+        win.Bind(wx.EVT_MENU, exec_inicwindows, id=8)
         menu_ajuda.AppendSeparator()
-        menu_ajuda.Append(8, "&Sobre...")
-        win.Bind(wx.EVT_MENU, exibir_sobre, id=8)
+        menu_ajuda.Append(9, "&Sobre...")
+        win.Bind(wx.EVT_MENU, exibir_sobre, id=9)
 
         menu_bar = wx.MenuBar()
         menu_bar.Append(menu_file, "A&rquivo")
