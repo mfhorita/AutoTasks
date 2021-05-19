@@ -2,9 +2,9 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AutoTasks"
-#define MyAppVersion "3.0.3"
+#define MyAppVersion "3.0.6"
 #define MyAppPublisher "Marcelo Horita"
-#define MyAppURL "https://github.com/mfhorita"
+#define MyAppURL "https://github.com/mfhorita/AutoTasks"
 #define MyAppExeName "AutoTasks.exe"
 #define MyAppAssocName MyAppName + " File"
 #define MyAppAssocExt ".myp"
@@ -13,7 +13,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{400C31C4-7DD5-46BF-A55F-88C01B0A2BB0}
+AppId={{79F88674-94E7-4EA8-8E09-97CDB5554191}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}

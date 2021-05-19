@@ -13,6 +13,7 @@ try:
     import win32com.client
     import datetime as dt
     import keyboard as kb
+    import warnings
     import time
     import sys
 
@@ -44,11 +45,15 @@ class ClockWindow(wx.Frame):
     @staticmethod
     def OnTimer(event):
 
+        def ExecThread():
+            if dt_exec[:, 'MinimizarTelas'][0, 0] == 1:
+                kb.send('windows+m')
+            os.system(dt_exec[:, 'Programa'][0, 0])
+
         def ExecPrograma(dt_exec):
             if dt_exec[:, 'DesabilitarTarefa'][0, 0] == 0:
-                if dt_exec[:, 'MinimizarTelas'][0, 0] == 1:
-                    kb.send('windows+m')
-                os.system(dt_exec[:, 'Programa'][0, 0])
+                thread[dt_exec[:, 'Programa'][0, 0]] = Thread(target=ExecThread)
+                thread[dt_exec[:, 'Programa'][0, 0]].start()
 
         lst_horarios = [dt_arq[:, 'Horario'][i, 0] for i in range(dt_arq.nrows)]
         hora_atual = str(time.strftime('%H:%M', time.localtime()))
@@ -129,7 +134,7 @@ class MainFrame(wx.Frame):
             self.tbIcon.RemoveIcon()
             self.tbIcon.Destroy()
             self.Destroy()
-            quit()
+            sys.exit()
 
         return event
 
@@ -249,20 +254,20 @@ def atualizar_tela(s_tarefa=''):
     chk_min_telas.SetValue(dt_arq[0, 5])  # Minimizar Telas
 
 
-def paralelizar_execucoes():
+def executar_thread():
     if int(chk_min_telas.GetValue()) == 1:
         kb.send('windows+m')
     os.system(txt_executar.GetValue())
 
 
 def executar_tarefa(event):
-    thread[cbo_tarefas.GetValue()] = Thread(target=paralelizar_execucoes)
+    thread[cbo_tarefas.GetValue()] = Thread(target=executar_thread)
     thread[cbo_tarefas.GetValue()].start()
     return event
 
 
 def exibir_sobre(event):
-    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.0.3', wx.OK | wx.ICON_INFORMATION)
+    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.0.6', wx.OK | wx.ICON_INFORMATION)
     return event
 
 
@@ -305,7 +310,7 @@ def exec_instalacao(event):
             win.tbIcon.RemoveIcon()
             win.tbIcon.Destroy()
             win.Destroy()
-            quit()
+            sys.exit()
 
     return event
 
@@ -329,6 +334,7 @@ def main():
         else:
             path = os.getcwd()
 
+        warnings.filterwarnings('ignore')
         thread = dict()
 
         app = wx.App(False)
