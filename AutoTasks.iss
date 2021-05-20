@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AutoTasks"
-#define MyAppVersion "3.0.6"
+#define MyAppVersion "3.0.7"
 #define MyAppPublisher "Marcelo Horita"
 #define MyAppURL "https://github.com/mfhorita/AutoTasks"
 #define MyAppExeName "AutoTasks.exe"
@@ -28,7 +28,7 @@ DisableProgramGroupPage=yes
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=D:\Projects\AutoTasks
-OutputBaseFilename=AutoTasks_Setup
+OutputBaseFilename=Setup
 SetupIconFile=D:\Projects\AutoTasks\build\exe.win-amd64-3.8\AutoTasks.ico
 Compression=lzma
 SolidCompression=yes

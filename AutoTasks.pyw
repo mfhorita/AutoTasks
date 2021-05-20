@@ -267,7 +267,7 @@ def executar_tarefa(event):
 
 
 def exibir_sobre(event):
-    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.0.6', wx.OK | wx.ICON_INFORMATION)
+    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.0.7', wx.OK | wx.ICON_INFORMATION)
     return event
 
 

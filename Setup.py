@@ -1,3 +1,5 @@
+# coding=UTF-8
+
 import sys
 from cx_Freeze import setup, Executable
 
@@ -11,7 +13,7 @@ elif sys.platform == 'win64':
 # base = "Console"   # terminal (util para debug)
 
 setup(name="AutoTasks",
-      version="3.0.6",
+      version="3.0.7",
       description="AutoTasks (Agenda de Tarefas)",
       author="Marcelo F Delgado Horita",
       author_email="mfhorita@gmail.com",
