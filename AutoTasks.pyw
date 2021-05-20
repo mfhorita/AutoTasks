@@ -34,6 +34,11 @@ global msk_horario
 global chk_min_telas
 
 
+def exibir_sobre(event):
+    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.0.8', wx.OK | wx.ICON_INFORMATION)
+    return event
+
+
 class ClockWindow(wx.Frame):
 
     def __init__(self):
@@ -125,18 +130,14 @@ class MainFrame(wx.Frame):
         # self.Show()
 
     # ----------------------------------------------------------------------
-    def onClose(self, event):
+    def onClose(self, _):
         """
         Destroy the taskbar icon and the frame
         """
-        if wx.MessageBox('Confirma fechar o AutoTasks?', 'AutoTasks: Fechar Tela',
-                         wx.YES_NO | wx.ICON_QUESTION) == wx.YES:
-            self.tbIcon.RemoveIcon()
-            self.tbIcon.Destroy()
-            self.Destroy()
-            sys.exit()
-
-        return event
+        self.tbIcon.RemoveIcon()
+        self.tbIcon.Destroy()
+        self.Destroy()
+        sys.exit()
 
     # ----------------------------------------------------------------------
     def onMinimize(self, event):
@@ -263,11 +264,6 @@ def executar_thread():
 def executar_tarefa(event):
     thread[cbo_tarefas.GetValue()] = Thread(target=executar_thread)
     thread[cbo_tarefas.GetValue()].start()
-    return event
-
-
-def exibir_sobre(event):
-    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.0.7', wx.OK | wx.ICON_INFORMATION)
     return event
 
 

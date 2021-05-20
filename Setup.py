@@ -13,7 +13,7 @@ elif sys.platform == 'win64':
 # base = "Console"   # terminal (util para debug)
 
 setup(name="AutoTasks",
-      version="3.0.7",
+      version="3.0.8",
       description="AutoTasks (Agenda de Tarefas)",
       author="Marcelo F Delgado Horita",
       author_email="mfhorita@gmail.com",
