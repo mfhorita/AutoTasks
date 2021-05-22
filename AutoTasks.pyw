@@ -23,9 +23,12 @@ except Exception as ex:
 
 global win
 global path
-global thread
 global dt_arq
 global list_dias
+
+global thread
+global exec_program
+
 global txt_executar
 global cbo_tarefas
 global chk_tarefa
@@ -35,7 +38,7 @@ global chk_min_telas
 
 
 def exibir_sobre(event):
-    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.0.8', wx.OK | wx.ICON_INFORMATION)
+    wx.MessageBox('Desenvolvido por Marcelo F. Delgado Horita', 'AutoTasks 3.1.0', wx.OK | wx.ICON_INFORMATION)
     return event
 
 
@@ -51,14 +54,8 @@ class ClockWindow(wx.Frame):
     def OnTimer(event):
 
         def ExecThread():
-            if dt_exec[:, 'MinimizarTelas'][0, 0] == 1:
-                kb.send('windows+m')
-            os.system(dt_exec[:, 'Programa'][0, 0])
-
-        def ExecPrograma(dt_exec):
-            if dt_exec[:, 'DesabilitarTarefa'][0, 0] == 0:
-                thread[dt_exec[:, 'Programa'][0, 0]] = Thread(target=ExecThread)
-                thread[dt_exec[:, 'Programa'][0, 0]].start()
+            # print(threading.current_thread(), exec_program)
+            os.system(exec_program)
 
         lst_horarios = [dt_arq[:, 'Horario'][i, 0] for i in range(dt_arq.nrows)]
         hora_atual = str(time.strftime('%H:%M', time.localtime()))
@@ -66,13 +63,25 @@ class ClockWindow(wx.Frame):
         if hora_atual in lst_horarios:
             dt_exec = dt_arq[f.Horario == hora_atual, :]
 
-            if list_dias[dt.datetime.now().weekday()] == dt_exec[:, 'DiasExecucao'][0, 0]:
-                ExecPrograma(dt_exec)
-            elif dt_exec[:, 'DiasExecucao'][0, 0] == 'Segunda à Sexta' \
-                    and dt.datetime.now().weekday() in [0, 1, 2, 3, 4]:
-                ExecPrograma(dt_exec)
-            elif dt_exec[:, 'DiasExecucao'][0, 0] == 'Todos':
-                ExecPrograma(dt_exec)
+            for i in range(dt_exec.nrows):
+                task = dt_exec[i, :]
+                if task[:, 'DesabilitarTarefa'][0, 0] == 0:
+                    if list_dias[dt.datetime.now().weekday()] == task[:, 'DiasExecucao'][0, 0]:
+                        pass
+                    elif dt_exec[:, 'DiasExecucao'][0, 0] == 'Segunda à Sexta' \
+                            and dt.datetime.now().weekday() in [0, 1, 2, 3, 4]:
+                        pass
+                    elif task[:, 'DiasExecucao'][0, 0] == 'Todos':
+                        pass
+                    else:
+                        continue
+
+                    if task[:, 'MinimizarTelas'][0, 0] == 1:
+                        kb.send('windows+m')
+
+                    exec_program = task[:, 'Programa'][0, 0]
+                    thread['thread' + str(i)] = Thread(name='thread' + str(i), target=ExecThread)
+                    thread['thread' + str(i)].start()
 
         return event
 
@@ -121,7 +130,7 @@ class MainFrame(wx.Frame):
         """Constructor"""
         wx.Frame.__init__(
             self, None, title="AutoTasks (Agenda de Tarefas)", size=(730, 250),
-            style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            style=wx.DEFAULT_FRAME_STYLE | wx.STAY_ON_TOP & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         self.tbIcon = CustomTaskBarIcon(self)
 
         self.Bind(wx.EVT_ICONIZE, self.onMinimize)
@@ -315,8 +324,11 @@ def main():
     global win
     global path
     global dt_arq
-    global thread
     global list_dias
+
+    global thread
+    global exec_program
+
     global txt_executar
     global cbo_tarefas
     global chk_tarefa

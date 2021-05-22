@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "AutoTasks"
-#define MyAppVersion "3.0.8"
+#define MyAppVersion "3.1.0"
 #define MyAppPublisher "Marcelo Horita"
 #define MyAppURL "https://github.com/mfhorita/AutoTasks"
 #define MyAppExeName "AutoTasks.exe"
